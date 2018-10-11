@@ -1,0 +1,84 @@
+---
+title: "Fortune - Most Powerful Women 2018"
+author: "Anna Vasylytsya"
+date: "October 10, 2018"
+output: 
+  html_document:
+    toc: true
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, error = FALSE, warning = FALSE)
+```
+
+### Introduction
+"The Most Powerful Women in Business list is compiled by Fortune editors, who consider four criteria: the size and importance of the woman's business in the global economy, the health and direction of the business, the arc of the woman's career (résumé and runway ahead), and social and cultural influence." [Source](http://fortune.com/2018/09/24/fortune-most-powerful-women-methodology-2018/)
+
+The data that was available on Fortunte's website only on partly captures the first two criteria (which are more quantiative) and do not capture the latter two factors at all (which are more subjective).
+
+Since I have taken the trouble of scraping this data, I explore the data below.
+
+
+```{r}
+library(rio)
+women <- import("https://raw.githubusercontent.com/annnvv/most_powerful_women_2018/master/data/fortune_most_powerful_women_2018.csv", header = TRUE)
+
+library(DT)
+datatable(women[ , c(1:8, 12)], rownames = FALSE)
+```
+
+### Averages
+Of the women on the list, `r round(mean(women$CEO), digit = 3)*100` percent are CEOs, `r round(mean(women$pres), digit = 3)*100` percent are presidents, and `r round(mean(women$chair), digit = 3)*100` percent are chairmen.
+  Note: these figures are not mutually exclusive.
+  
+On average, companies run by women on this list generate \$`r round((mean(women$revenue, na.rm = TRUE)/100), digit = 1)` billion in revenue (standard deviation: \$`r round((sd(women$revenue, na.rm = TRUE)/100), digit = 1)`).
+On average, companies run by women on this list earn \$`r round((mean(women$profit, na.rm = TRUE)/100), digit = 1)` in profit (standard deviation: \$`r round((sd(women$profit, na.rm = TRUE)/100), digit = 1)`).
+On average, companies run by women on this list have a \$`r round((mean(women$market_value, na.rm = TRUE)/100), digit = 1)` market value (standard deviation: \$`r round((sd(women$market_value, na.rm = TRUE)/100), digit = 1)`).
+
+### Market Value by Rank
+
+```{r, fig.width = 14}
+library(ggplot2)
+ggplot(women, aes(x = rank, y = market_value)) +
+  geom_bar(stat = "identity") +
+  theme_bw() + 
+  labs(title = "Market Value of Companies by Women's Rank", subtitle = "2018",
+       caption = "Some market value figures are missing",
+       x = "Rank", y = "Market Value in Million USD") +
+  scale_x_continuous(limits = c(0, 51), minor_breaks = 5)
+
+```
+
+## Age Distribution
+The average age of women on Fortune's list is `r round(mean(women$age), digit = 1)` years old. The youngest person on this list is `r min(women$age)` years old.
+
+```{r , fig.width = 14}
+library(ggplot2)
+ggplot(data = women, aes(women$age)) + 
+  geom_bar() +
+  theme_bw() +
+  labs(title = "Age Distribution of Fortune's Most Powerful Women", subtitle = "2018",
+     x = "Age", y = "Number of Women") +
+  scale_x_continuous(limits = c(45, 69)) +
+  scale_y_continuous(limits = c(0, 7))
+
+```
+
+## Age and Rank
+This scatter plot and the histogram above indicate that women on this list tends to be between 50-65 years old.
+
+```{r, fig.width = 14}
+library(ggplot2)
+ggplot(data = women, aes(x = women$rank, y = women$age)) + 
+  geom_point() +
+  theme_bw() +
+  labs(title = "Age vs. Rank", subtitle = "2018",
+     x = "Rank", y = "Age") +
+  scale_x_continuous(limits = c(0, 51)) +
+  scale_y_continuous(limits = c(0, 70))
+  
+```
+
+#### Thoughts on extending the analysis
+One additional variable that would be interesting to do is the sector that these women work in. Also, I would be interested in knowing how many of these women are married and how many have children.

@@ -29,10 +29,10 @@
   # put links into dataframe
   clean_links <- as.data.frame(links, stringsAsFactors = FALSE)
   rm(links)
- 
+  
   # identify links to keep
   clean_links$bin <- regexpr(pattern = "/most-powerful-women/", text = clean_links$links)
-
+  
   # keep only necessary links
   clean_links <- subset(x = clean_links, clean_links$bin == 1, drop = TRUE)  
   
@@ -42,10 +42,10 @@
   
   # check structure of dataframe
   str(clean_links)
-
+  
   # make a complete url
   clean_links$links <- gsub("/most-powerful-women", "http://fortune.com/most-powerful-women", clean_links$links)
-
+  
   # extract name
   clean_links$name <- clean_links$links
   clean_links$name <- gsub("http://fortune.com/most-powerful-women/", "", clean_links$name)
@@ -62,17 +62,17 @@
   
   # re-order variables
   clean_links <- clean_links[,c(1,3,2)]
-
-### PART 2: extract title, affiliation, and age from each webpage
+  
+  ### PART 2: extract title, affiliation, and age from each webpage
   ### define function
   get_text <- function(url, node){
-  # A function to get text from webpage
-  # Args:
-  #       url: a url to a webpage
-  #       node: the node where to look for the text
-  # Returns:
-  #       a vector with desired text 
-  
+    # A function to get text from webpage
+    # Args:
+    #       url: a url to a webpage
+    #       node: the node where to look for the text
+    # Returns:
+    #       a vector with desired text 
+    
     url_s <- read_html(url) %>% 
       html_nodes(node) %>% 
       html_text()
@@ -137,7 +137,7 @@
   # generate chairman variables
   titles$chair <- as.integer(grepl("Chairman", titles$title))
   
-### Part 3: Extract revenue, profit, and market value from tables in all 51 webpages
+  ### Part 3: Extract revenue, profit, and market value from tables in all 51 webpages
   ###  
   table_info <- function(url){
     # A function to scrape specific information from a table on a webpage
@@ -149,14 +149,14 @@
     tb_info <- read_html(url) %>%
       html_nodes("table") %>%
       html_table()
-  
-  if(length(tb_info) != 0){
-    comp_info <- tb_info[[3]]
+    
+    if(length(tb_info) != 0){
+      comp_info <- tb_info[[3]]
       revenue <- comp_info[1,2]
       profit <- comp_info[2,2]
       market_value <- comp_info[3,2]
-    list2 <- data.frame(revenue, profit, market_value, stringsAsFactors = FALSE)
-    return(list2)    
+      list2 <- data.frame(revenue, profit, market_value, stringsAsFactors = FALSE)
+      return(list2)    
     }    
   }
   
@@ -166,7 +166,7 @@
                       market_value = character())
   for (i in urls) {
     row <- table_info(i)
-      print(i)
+    print(i)
     table <- rbind(table, row)
   }
   rm(i, row)
@@ -186,13 +186,13 @@
   # add Marry Barra row back into table
   tb_marry_barra <- c("157311.0", "-3864.0", "49,522.2")
   table <- rbind(tb_marry_barra, table)
-    rm(tb_marry_barra)
+  rm(tb_marry_barra)
   table <- table[c(2,1,3:51),]
   
   # change variables to numeric
   table$profit <- as.numeric((table$profit))
   table$revenue <- as.numeric(table$revenue)
-    table$market_value <- gsub(",", "", table$market_value)
+  table$market_value <- gsub(",", "", table$market_value)
   table$market_value <- as.numeric(table$market_value)
   
   #check structure of dataframe
@@ -200,10 +200,10 @@
   
   # note: profits, reveue, and market value are in millioins!
   
-### Part 4: Bind dataframes into one dataset, organize, and write a .csv
+  ### Part 4: Bind dataframes into one dataset, organize, and write a .csv
   df <- cbind(clean_links, table, titles)  
   str(df)
-
+  
   # re-ordering variables
   df <- df[ , c(1:6, 8:13)]
   df <- df[ , c(2:12, 1)]
