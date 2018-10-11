@@ -13,7 +13,7 @@ knitr::opts_chunk$set(message = FALSE, error = FALSE, warning = FALSE)
 ```
 
 ### Introduction
->"The Most Powerful Women in Business list is compiled by Fortune editors, who consider four criteria: the size and importance of the woman's business in the global economy, the health and direction of the business, the arc of the woman's career (résumé and runway ahead), and social and cultural influence." [Source](http://fortune.com/2018/09/24/fortune-most-powerful-women-methodology-2018/)
+>[Source](http://fortune.com/2018/09/24/fortune-most-powerful-women-methodology-2018/)
 
 The data that was available on Fortunte's website only on partly captures the first two criteria (which are more quantiative) and do not capture the latter two factors at all (which are more subjective).
 
