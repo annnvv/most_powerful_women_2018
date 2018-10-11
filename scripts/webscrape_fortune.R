@@ -24,9 +24,11 @@
   
   # use the function to get the urls from the webpage
   links <- get_url(fortune, "a", "href")
+  rm(fortune)
   
   # put links into dataframe
   clean_links <- as.data.frame(links, stringsAsFactors = FALSE)
+  rm(links)
  
   # identify links to keep
   clean_links$bin <- regexpr(pattern = "/most-powerful-women/", text = clean_links$links)
@@ -83,7 +85,7 @@
     print(i)
     titles <- rbind(titles, result)
   }
-  rm(i)
+  rm(i, result)
   
   titles <- as.data.frame(titles, stringsAsFactors = FALSE)
   # trim whitespace
@@ -207,7 +209,7 @@
   df <- df[ , c(2:12, 1)]
   df <- df[ , c(1,2,8,6,7,3:5,9:12)]
   
-  # rm(clean_links, titles, table)
+  rm(clean_links, titles, table)
   
   # write to csv
   write.csv(df, file = "fortune_most_powerful_women_2018.csv", row.names = FALSE)
