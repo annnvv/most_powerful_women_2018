@@ -1,4 +1,4 @@
-  #setwd("C:/Users/Anna V/Desktop/R_Stuff/powerful_women")
+  # Load libraries
   library(rvest)
   library(tools)
   
